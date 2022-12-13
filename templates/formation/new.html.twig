@@ -3,15 +3,15 @@
 {% block title %}Créer Formation{% endblock %}
 
 {% block body %}
-<div class="container-fluid">
+<div class="container mt-3">
     <h1>Créer une formation</h1>
-        <div class="wrapper-form">
-        <div class="container mt-5 mb-4">
-            {{ include('formation/_form.html.twig') }}
+        <div class="wrapper-form col-6">
+            <div class="container mt-5 mb-4">
+                {{ include('partials/_form.html.twig') }}
+            </div>
         </div>
-    </div>
 </div>
     <div class="text-center">
-      <a href="{{ path('app_formation_index') }}" class="btn btn-warning btn-md mb-3">retour à la liste</a>
-      </div>
+        <a href="{{ path('app_formation_index') }}" class="btn btn-warning btn-md mb-3">retour à la liste</a>
+    </div>
 {% endblock %}

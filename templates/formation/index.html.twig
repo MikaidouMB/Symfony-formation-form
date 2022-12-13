@@ -3,8 +3,13 @@
 {% block title %}Formation index{% endblock %}
 
 {% block body %}
+   {% for message in app.flashes('success') %}
+            <div class="alert alert-success" role="alert">
+                {{ message}}
+            </div>
+        {% endfor %}
+<div class ="container mt-3">
     <h1>Vos formations</h1>
-<div class ="container-fluid">
     <table class="table">
         <thead>
             <tr>
@@ -16,7 +21,6 @@
             </tr>
         </thead>
         <tbody>
-        {{dump(formations)}}
         {% for formation in formations %}
             <tr>
                 <td>{{ formation.id }}</td>

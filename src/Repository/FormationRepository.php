@@ -39,20 +39,20 @@ class FormationRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Formation[] Returns an array of Formation objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('f')
-//            ->andWhere('f.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('f.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+    * @return Formation[] Returns an array of Formation objects
+     */
+    public function findByUser($user): array
+    {
+        return $this->createQueryBuilder('f')
+            ->andWhere('f.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('f.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
 //    public function findOneBySomeField($value): ?Formation
 //    {

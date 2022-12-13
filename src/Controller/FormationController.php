@@ -18,8 +18,9 @@ class FormationController extends AbstractController
     #[Route('/', name: 'app_formation_index', methods: ['GET'])]
     public function index(FormationRepository $formationRepository): Response
     {
+        $user = $this->getUser();
         return $this->render('formation/index.html.twig', [
-            'formations' => $formationRepository->findAll(),
+            'formations' => $formationRepository->findByUser($user),
         ]);
     }
 
@@ -31,8 +32,12 @@ class FormationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $formation->setUser($this->getUser());
             $formationRepository->save($formation, true);
-
+            $this->addFlash(
+                'success',
+                'La formation a bien été créée'
+            );
             return $this->redirectToRoute('app_formation_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -62,6 +67,10 @@ class FormationController extends AbstractController
 
             $em->persist($formation);
             $em->flush();
+            $this->addFlash(
+                'success',
+                'La formation a bien été éditée'
+            );
             return $this->redirectToRoute('app_formation_index', [], Response::HTTP_SEE_OTHER);
         }
 
