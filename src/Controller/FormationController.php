@@ -11,16 +11,26 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Component\HttpClient\HttpClient;
 
 #[Route('/formation')]
 class FormationController extends AbstractController
 {
     #[Route('/', name: 'app_formation_index', methods: ['GET'])]
-    public function index(FormationRepository $formationRepository): Response
+    public function index(FormationRepository $formationRepository,CacheInterface $cache): Response
     {
-        $user = $this->getUser();
+     $user = $this->getUser();
+
+         $formation = $cache->get('formation_details',function(ItemInterface $item) use($formationRepository)
+        {
+            $item->expiresAfter(20);
+            return $formationRepository->findByUser($this->user);
+        });
+
         return $this->render('formation/index.html.twig', [
-            'formations' => $formationRepository->findByUser($user),
+                'formations' => $formationRepository->findByUser($user)
         ]);
     }
 
@@ -31,13 +41,25 @@ class FormationController extends AbstractController
         $form = $this->createForm(FormationType::class, $formation);
         $form->handleRequest($request);
 
+        $client = HttpClient::create();
+
         if ($form->isSubmitted() && $form->isValid()) {
             $formation->setUser($this->getUser());
             $formationRepository->save($formation, true);
+
             $this->addFlash(
                 'success',
                 'La formation a bien été créée'
             );
+            
+            $response = $client->request('POST', "https://webhook.site/367a3baf-71ff-4e03-834c-6617b1a38f5b" , [
+                'json' => [
+                    'titre' => $formation->getName(),
+                    'Pseudo de l\'auteur '=> $this->getUser()->getPseudo(),
+                    'Date de création' => $formation->getCreatedAt(),
+                    'Date de dernière mise à jour' => $formation->getUpdatedAt(),
+                    ]
+              ]);
             return $this->redirectToRoute('app_formation_index', [], Response::HTTP_SEE_OTHER);
         }
 

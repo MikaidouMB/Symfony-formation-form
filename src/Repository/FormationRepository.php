@@ -48,7 +48,6 @@ class FormationRepository extends ServiceEntityRepository
             ->andWhere('f.user = :user')
             ->setParameter('user', $user)
             ->orderBy('f.id', 'ASC')
-            ->setMaxResults(10)
             ->getQuery()
             ->getResult()
         ;
