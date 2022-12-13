@@ -1,11 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Formation{% endblock %}
+{% block title %}Créer Formation{% endblock %}
 
 {% block body %}
-    <h1>Create new Formation</h1>
-
-    {{ include('formation/_form.html.twig') }}
-
-    <a href="{{ path('app_formation_index') }}">back to list</a>
+<div class="container-fluid">
+    <h1>Créer une formation</h1>
+        <div class="wrapper-form">
+        <div class="container mt-5 mb-4">
+            {{ include('formation/_form.html.twig') }}
+        </div>
+    </div>
+</div>
+    <div class="text-center">
+      <a href="{{ path('app_formation_index') }}" class="btn btn-warning btn-md mb-3">retour à la liste</a>
+      </div>
 {% endblock %}

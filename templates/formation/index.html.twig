@@ -3,19 +3,20 @@
 {% block title %}Formation index{% endblock %}
 
 {% block body %}
-    <h1>Formation index</h1>
-
+    <h1>Vos formations</h1>
+<div class ="container-fluid">
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Name</th>
-                <th>CreatedAt</th>
-                <th>UpdatedAt</th>
-                <th>actions</th>
+                <th>Titre</th>
+                <th>Crée le</th>
+                <th>Dernière mise à jour</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
+        {{dump(formations)}}
         {% for formation in formations %}
             <tr>
                 <td>{{ formation.id }}</td>
@@ -23,17 +24,18 @@
                 <td>{{ formation.createdAt ? formation.createdAt|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ formation.updatedAt ? formation.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
                 <td>
-                    <a href="{{ path('app_formation_show', {'id': formation.id}) }}">show</a>
-                    <a href="{{ path('app_formation_edit', {'id': formation.id}) }}">edit</a>
+                    <a href="{{ path('app_formation_show', {'id': formation.id}) }}">voir</a>
+                    <a href="{{ path('app_formation_edit', {'id': formation.id}) }}">modifier</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">no records found</td>
+                <td colspan="5">aucune formation trouvée</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('app_formation_new') }}">Create new</a>
+    <a href="{{ path('app_formation_new') }}" class="btn btn-primary btn-md mb-3">Créer une nouvelle</a>
+    </div>
 {% endblock %}

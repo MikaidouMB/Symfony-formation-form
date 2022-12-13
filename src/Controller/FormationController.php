@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Formation;
+use App\Entity\User;
 use App\Form\FormationType;
 use App\Repository\FormationRepository;
 use Doctrine\ORM\EntityManagerInterface;
