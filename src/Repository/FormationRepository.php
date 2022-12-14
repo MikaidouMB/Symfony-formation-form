@@ -52,14 +52,4 @@ class FormationRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
-
-//    public function findOneBySomeField($value): ?Formation
-//    {
-//        return $this->createQueryBuilder('f')
-//            ->andWhere('f.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }
