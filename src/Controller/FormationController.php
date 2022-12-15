@@ -26,7 +26,7 @@ class FormationController extends AbstractController
          $formation = $cache->get('formation_details',function(ItemInterface $item) use($formationRepository)
         {
             $item->expiresAfter(20);
-            return $formationRepository->findByUser($this->user);
+            return $formationRepository->findByUser($this->getUser());
         });
 
         return $this->render('formation/index.html.twig', [
