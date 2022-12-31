@@ -42,7 +42,7 @@ class FormationRepository extends ServiceEntityRepository
     /**
     * @return Formation[] Returns an array of Formation objects
      */
-    public function findByUser($user): array
+  /*  public function findByUser($user): array
     {
         return $this->createQueryBuilder('f')
             ->andWhere('f.user = :user')
@@ -51,7 +51,7 @@ class FormationRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
         ;
-    }
+    }*/
 
 //    public function findOneBySomeField($value): ?Formation
 //    {

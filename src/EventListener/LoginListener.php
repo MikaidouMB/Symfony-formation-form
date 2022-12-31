@@ -22,15 +22,6 @@ class LoginListener
         $this->em = $em;
     }
 
-    /**
-     * @return array
-     */
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            SecurityEvents::INTERACTIVE_LOGIN => 'onSecurityInteractiveLogin',
-        ];
-    }
 
     public function onSecurityInteractiveLogin(InteractiveLoginEvent $event): void
     {

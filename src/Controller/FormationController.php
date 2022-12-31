@@ -14,6 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 #[Route('/formation')]
 class FormationController extends AbstractController
@@ -21,27 +22,25 @@ class FormationController extends AbstractController
     #[Route('/', name: 'app_formation_index', methods: ['GET'])]
     public function index(FormationRepository $formationRepository,CacheInterface $cache): Response
     {
-     $user = $this->getUser();
-
-         $formation = $cache->get('formation_details',function(ItemInterface $item) use($formationRepository)
+        $user = $this->getUser();
+        
+        $formations = $cache->get('formation_details',function(ItemInterface $item) use($formationRepository)
         {
             $item->expiresAfter(20);
             return $formationRepository->findByUser($this->getUser());
         });
 
         return $this->render('formation/index.html.twig', [
-                'formations' => $formationRepository->findByUser($user)
+                'formations' => $formations
         ]);
     }
 
     #[Route('/new', name: 'app_formation_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, FormationRepository $formationRepository): Response
+    public function new(Request $request, FormationRepository $formationRepository, HttpClientInterface $client): Response
     {
         $formation = new Formation();
         $form = $this->createForm(FormationType::class, $formation);
         $form->handleRequest($request);
-
-        $client = HttpClient::create();
 
         if ($form->isSubmitted() && $form->isValid()) {
             $formation->setUser($this->getUser());
@@ -52,7 +51,7 @@ class FormationController extends AbstractController
                 'La formation a bien été créée'
             );
             
-            $response = $client->request('POST', "https://webhook.site/367a3baf-71ff-4e03-834c-6617b1a38f5b" , [
+            $response = $client->request('POST', "https://webhook.site/85b87cf7-e7a6-4cfa-8505-1ab730727f1f" , [
                 'json' => [
                     'titre' => $formation->getName(),
                     'Pseudo de l\'auteur '=> $this->getUser()->getPseudo(),
