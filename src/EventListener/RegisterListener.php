@@ -20,15 +20,14 @@ class RegisterListener
     public function postPersist(LifecycleEventArgs $args)
     {
         $entity = $args->getObject();
-        
-        if(true == property_exists($entity,'firstname') && $entity instanceof User){
+        if($entity instanceof User){
 
             $idEntity = $entity->getId();
             $firstname = $entity->getFirstname();
             $lastname = $entity->getLastname();
-            $concatenation = ($lastname . '_' . $firstname . '_' . $idEntity);
+            $pseudo = ($lastname . '_' . $firstname . '_' . $idEntity);
 
-            $entity->setPseudo($concatenation);
+            $entity->setPseudo($pseudo);
             $this->em->persist($entity);
             $this->em->flush();
 
