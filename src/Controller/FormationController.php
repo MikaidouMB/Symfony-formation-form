@@ -36,49 +36,43 @@ class FormationController extends AbstractController
     }
 
     #[Route('/new', name: 'app_formation_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, FormationRepository $formationRepository, HttpClientInterface $client): Response
-    {
-        $formation = new Formation();
-        $form = $this->createForm(FormationType::class, $formation);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $formation->setUser($this->getUser());
-            $formationRepository->save($formation, true);
-
-            $this->addFlash(
-                'success',
-                'La formation a bien été créée'
-            );
-            
-            $response = $client->request('POST', "https://webhook.site/85b87cf7-e7a6-4cfa-8505-1ab730727f1f" , [
-                'json' => [
-                    'titre' => $formation->getName(),
-                    'Pseudo de l\'auteur '=> $this->getUser()->getPseudo(),
-                    'Date de création' => $formation->getCreatedAt(),
-                    'Date de dernière mise à jour' => $formation->getUpdatedAt(),
-                    ]
-              ]);
-            return $this->redirectToRoute('app_formation_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->renderForm('formation/new.html.twig', [
-            'formation' => $formation,
-            'form' => $form,
-        ]);
-    }
-
-    #[Route('/{id}', name: 'app_formation_show', methods: ['GET'])]
-    public function show(Formation $formation): Response
-    {
-        return $this->render('formation/show.html.twig', [
-            'formation' => $formation,
-        ]);
-    }
-
     #[Route('/{id}/edit', name: 'app_formation_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Formation $formation, FormationRepository $formationRepository, EntityManagerInterface $em): Response
+
+    public function new(Request $request,?Formation $formation, FormationRepository $formationRepository, HttpClientInterface $client, EntityManagerInterface $em)
     {
+        $edit = (bool)$formation;
+        
+        if(!$edit){
+            $formation = new Formation();
+        
+            $form = $this->createForm(FormationType::class, $formation);
+    
+            $form->handleRequest($request);
+    
+            if ($form->isSubmitted() && $form->isValid()) {
+                if(!$edit){
+                    $formation->setUser($this->getUser());
+                    $formationRepository->save($formation, true);
+        
+                    $this->addFlash(
+                        'success',
+                        'La formation a bien été créée'
+                    );
+                    
+                    $response = $client->request('POST', "https://webhook.site/85b87cf7-e7a6-4cfa-8505-1ab730727f1f" , [
+                        'json' => [
+                            'titre' => $formation->getName(),
+                            'Pseudo de l\'auteur '=> $this->getUser()->getPseudo(),
+                            'Date de création' => $formation->getCreatedAt(),
+                            'Date de dernière mise à jour' => $formation->getUpdatedAt(),
+                            ]
+                      ]);
+                }
+                return $this->redirectToRoute('app_formation_index', [], Response::HTTP_SEE_OTHER);
+            }
+    
+        }
+            
         $form = $this->createForm(FormationType::class, $formation);
         $form->handleRequest($request);
 
@@ -94,10 +88,21 @@ class FormationController extends AbstractController
             );
             return $this->redirectToRoute('app_formation_index', [], Response::HTTP_SEE_OTHER);
         }
+        
+        return $this->renderForm(
+            $edit ? 'formation/edit.html.twig' : 'formation/new.html.twig',
+            [
+                'formation' => $formation,
+                'form' => $form,
+            ]
+        );
+    }
 
-        return $this->renderForm('formation/edit.html.twig', [
+    #[Route('/{id}', name: 'app_formation_show', methods: ['GET'])]
+    public function show(Formation $formation): Response
+    {
+        return $this->render('formation/show.html.twig', [
             'formation' => $formation,
-            'form' => $form,
         ]);
     }
 
